@@ -66,9 +66,9 @@ trap 'rm -rf "$tmp"' EXIT
   && ok "new-flutter-app --dry-run" || bad "new-flutter-app --dry-run"
 
 echo "No secrets or machine paths"
-patterns=$'(AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{20,}|xox[baprs]-[A-Za-z0-9-]{10,}|sk-[A-Za-z0-9]{32,}|-----BEGIN [A-Z ]*PRIVATE KEY-----|(^|[[:space:]=:(\'"])/(Users|home)/[a-z]+/)'
+patterns=$'(AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{20,}|xox[baprs]-[A-Za-z0-9-]{10,}|sk-[A-Za-z0-9]{32,}|-----BEGIN [A-Z ]*PRIVATE KEY-----|(^|[^A-Za-z0-9_.])/(Users|home)/[a-z]+/)'
 hits=$(cd "$root" && git ls-files -z 2>/dev/null | xargs -0 grep -nIE "$patterns" 2>/dev/null \
-  | grep -vE '/test/|/Users/someone/|app_log\.dart' || true)
+  | grep -vE '^scripts/validate\.sh:|/test/|/Users/someone/|app_log\.dart' || true)
 [ -z "$hits" ] && ok "clean" || { echo "$hits" >&2; bad "possible secret or machine path"; }
 keyfiles=$(cd "$root" && git ls-files 2>/dev/null | grep -E '\.(p8|p12|pem|jks|keystore|mobileprovision)$|(^|/)\.env$|google-services\.json|GoogleService-Info\.plist' || true)
 [ -z "$keyfiles" ] && ok "no key files" || { echo "$keyfiles" >&2; bad "key file tracked"; }

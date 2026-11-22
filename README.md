@@ -63,7 +63,7 @@ Not a fit: a product already live in the stores (stored keys and ids need migrat
 
 ```bash
 git clone https://github.com/Mahmoud-khalil-dev/starting-flutter-apps.git
-cp -R starting-new-project/skills/starting-new-projects ~/.claude/skills/
+cp -R starting-flutter-apps/skills/starting-new-projects ~/.claude/skills/
 ```
 
 ### Other agents
