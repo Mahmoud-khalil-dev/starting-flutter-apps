@@ -1,6 +1,6 @@
 {
   "name": "starting-new-projects",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Day-0 setup for a new app or repo: agent rules, docs set, one verify script, security baseline, CI gate, and a Flutter starter kit.",
   "author": { "name": "Mahmoud-khalil-dev" },
   "repository": "https://github.com/Mahmoud-khalil-dev/starting-flutter-apps",

@@ -14,6 +14,7 @@ Works with Claude Code and any agent that reads `SKILL.md` skills (Codex, Gemini
 
 ## Contents
 
+- [Who it is for](#who-it-is-for)
 - [What you get](#what-you-get)
 - [Install](#install)
 - [Usage](#usage)
@@ -25,6 +26,19 @@ Works with Claude Code and any agent that reads `SKILL.md` skills (Codex, Gemini
 - [Contributing](#contributing)
 - [Security](#security)
 - [License](#license)
+
+## Who it is for
+
+**Flutter teams first.** The rules, docs set and day-0 sequence fit any stack, but the ready-made kit and scaffolder are Flutter (iOS, Android and web).
+
+| | Built in | Your choice |
+|---|---|---|
+| **Always on** | One verify gate, architecture tests, secret scan, secure token storage, coverage gate, CI workflow | |
+| **Languages** | English, plus full Arabic and right-to-left support with Arabic-Indic digits | Keep Arabic, or delete `lib/l10n/app_ar.arb` and its tests for English only |
+| **Motion** | Calm motion tokens with a reduced-motion version on every component | Tune the tokens in `lib/core/theme/motion.dart` |
+| **Workflow** | Templates assume an owner who merges, and agents that never push without a yes | Edit the workflow lines in `assets/templates/` for a solo or open-source flow |
+
+Not a fit: a product already live in the stores (stored keys and ids need migrations this skill does not plan), or a non-Flutter app that wants a ready kit.
 
 ## What you get
 

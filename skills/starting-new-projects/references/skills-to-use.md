@@ -4,6 +4,20 @@ Contents:
 1. Gate for outside skills; 2. Day-0 steps; 3. Later phases
 4. Stack-specific skills; 5. After large changes; Rules
 
+**All of these are optional.** Every step in `SKILL.md` works with no other skill installed. The skills below only make a step stronger; skip any you do not have.
+
+## Start here: the five most useful
+
+| Skill | Helps with | Where to get it |
+|---|---|---|
+| `superpowers:brainstorming` | Step 1, framing the product | [obra/superpowers](https://github.com/obra/superpowers) |
+| `superpowers:test-driven-development` | Steps 5 and 12, test-first | same plugin |
+| `superpowers:systematic-debugging` | any failing gate | same plugin |
+| `superpowers:verification-before-completion` | before saying "done" | same plugin |
+| `skill-creator` | changing this skill | [anthropics/skills](https://github.com/anthropics/skills) |
+
+The rest of this file maps more skills to each step, for setups that have them.
+
 Read this at day 0 and whenever a new phase starts. Load each skill with the Skill tool when its work comes up. Skill text does not survive compaction, so reload it after one. If a named skill is not installed, use the closest installed one and say so in the hand-off. Names are exact: user skills by bare name, plugin skills as `superpowers:<name>`.
 
 ## 1. Gate for outside skills

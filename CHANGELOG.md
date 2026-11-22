@@ -5,9 +5,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-22
+
 ### Changed
 
-- The repository moved to `Mahmoud-khalil-dev/starting-flutter-apps`. Old links redirect; the plugin and marketplace names are unchanged until 2.0.0.
+- Companion skills are marked optional, with the five most useful listed first and linked.
+- README: a "Who it is for" section with what is built in and what you choose.
+- `SKILL.md`: the no-fake-data rule points to decision D3 in the decisions template.
+- The repository moved to `Mahmoud-khalil-dev/starting-flutter-apps`. Old links redirect; the plugin and marketplace names are unchanged.
 
 ## [1.0.0] - 2026-11-22
 
@@ -21,5 +26,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Claude Code plugin and marketplace manifests.
 - `scripts/validate.sh` and a CI workflow that runs it.
 
-[Unreleased]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/releases/tag/v1.0.0

@@ -20,7 +20,7 @@ Not for: a product users already run (use `releasing-live-app-updates`). A live 
 
 ## Day-0 sequence, in order
 
-1. **Frame the product.** Users, roles, platforms, languages (RTL and digits included). Skills for this and each later step: `references/skills-to-use.md`.
+1. **Frame the product.** Users, roles, platforms, languages (RTL and digits included). Optional skills that help each step: `references/skills-to-use.md` (none required).
 2. **Start a decisions log.** One numbered line per owner decision, with date and reason.
 3. **Lay out the repo by feature.** One folder per feature, shared code apart. **Flutter:** run `scripts/new-flutter-app "<App Name>"`, fill `brand.dart`, read `references/flutter-kit.md`.
 4. **Config per environment.** Committed example files, git-ignored real ones, one `Env` reader. No host or key in source. Keep the API contract (schema or OpenAPI file) in `contracts/`; generate clients from it or test against it.
@@ -62,7 +62,7 @@ Backend-only: skip `docs/DESIGN.md` and the UI rules (reference section 7, width
 ## Where to look
 
 - `references/structure-and-rules.md`: layout and rules.
-- `references/skills-to-use.md`: skills to load; read at day 0 and each new phase.
+- `references/skills-to-use.md`: optional companion skills per step; none are required.
 - `references/flutter-kit.md`: Flutter kit modules and day-0 order.
 - `assets/templates/`: copy, fill every placeholder, delete the guidance comments.
 
@@ -76,7 +76,7 @@ Backend-only: skip `docs/DESIGN.md` and the UI rules (reference section 7, width
 | Docs never updated | Headers say when to update. |
 | Real env file or key committed "temporarily" | Commit examples only; scan in CI. |
 | RTL, languages and accessibility "later" | Do them in the first screen. |
-| Fake data to unblock the UI | Real dev backend once it exists; before that only the decision D3 stub (dev-only path, import-banned, refused by release start-up). Doubles live in tests. Nothing fake ships. |
+| Fake data to unblock the UI | Real dev backend once it exists; before that only a stub built from the API contract (decision D3 in `assets/templates/docs/decisions.md`: dev-only path, import-banned, refused by release start-up). Doubles live in tests. Nothing fake ships. |
 | Framework layout, no dependency rules | Write import rules; test them. |
 
 ## Red flags: stop and fix the base
