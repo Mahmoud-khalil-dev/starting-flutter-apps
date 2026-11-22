@@ -1,6 +1,12 @@
 {
   "name": "starting-new-project",
-  "owner": { "name": "Mahmoud-khalil-dev" },
+  "owner": {
+    "name": "Mahmoud-khalil-dev"
+  },
+  "metadata": {
+    "description": "Day-0 project setup skill: agent rules, docs set, verify script, security baseline, CI gate and a Flutter starter kit.",
+    "version": "1.0.0"
+  },
   "plugins": [
     {
       "name": "starting-new-projects",
