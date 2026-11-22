@@ -1,0 +1,57 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IDE
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Flutter, Dart and pub
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+coverage/
+android/.kotlin/
+
+# Symbolication and obfuscation
+app.*.symbols
+app.*.map.json
+
+# Android Studio build artifacts
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Real env files hold keys. Only the examples are committed.
+env/*.json
+!env/*.example.json
+
+# Local code graph and agent scratch
+graphify-out/
+.superpowers/
+
+# Flutter writes these on every run, with absolute paths in them.
+/android/local.properties
+/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/ephemeral/
+/ios/Flutter/flutter_export_environment.sh
+/ios/Runner/GeneratedPluginRegistrant.*

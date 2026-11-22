@@ -1,0 +1,428 @@
+#!/usr/bin/env bash
+# Start a Flutter app from the kit that sits next to this script.
+#
+#   new-flutter-app "<App Name>"                      package and target derived
+#   new-flutter-app <target-dir> <package_name> "<App Name>"
+#
+# Options: --org <reverse.domain>   bundle id prefix (default dev.<package>)
+#          --name-ar "<Arabic name>"  the Arabic app name (default: the Latin one)
+#          --dry-run                print the plan and stop
+# Env:     NEW_FLUTTER_APP_ROOT     parent of a defaulted target (the current directory)
+#
+# It only writes inside the target. A target that is not empty is refused.
+set -euo pipefail
+
+die() { echo "new-flutter-app: $*" >&2; exit 2; }
+usage() {
+  cat >&2 <<'USAGE'
+usage: new-flutter-app "<App Name>" [--org <reverse.domain>] [--name-ar "<Arabic name>"] [--dry-run]
+       new-flutter-app <target-dir> <package_name> "<App Name>" [options as above]
+USAGE
+  exit 2
+}
+
+here=$(cd "$(dirname "$0")" && pwd)
+kit="$here/../assets/flutter-kit"
+[ -d "$kit/lib" ] || die "the kit is not next to this script: $kit"
+
+org=''
+name_ar=''
+dry=0
+args=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --org) [ $# -ge 2 ] || usage; org=$2; shift 2 ;;
+    --name-ar) [ $# -ge 2 ] || usage; name_ar=$2; shift 2 ;;
+    --dry-run) dry=1; shift ;;
+    -h|--help) usage ;;
+    -*) die "unknown option: $1" ;;
+    *) args+=("$1"); shift ;;
+  esac
+done
+
+target=''
+package=''
+case "${#args[@]}" in
+  1) name=${args[0]} ;;
+  3) [ -n "${args[0]}" ] || die 'the target is empty'
+     target=${args[0]}; package=${args[1]}; name=${args[2]} ;;
+  *) usage ;;
+esac
+
+# --- the app names ----------------------------------------------------------
+check_name() { # label, value
+  local label=$1 value=$2
+  [ -n "$value" ] || die "the $label is empty"
+  [ "${#value}" -le 40 ] || die "the $label is longer than 40 characters"
+  case "$value" in
+    *[\"\'\\/\&\<\>\$\`\{\}%\|]*) die "the $label may not hold any of: \" ' \\ / & < > \$ \` { } % |" ;;
+  esac
+  case "$value" in
+    *[[:cntrl:]]*) die "the $label holds a control character" ;;
+    ' '*|*' ') die "the $label starts or ends with a space" ;;
+  esac
+}
+check_name 'app name' "$name"
+if [ -n "$name_ar" ]; then check_name 'Arabic app name' "$name_ar"; fi
+
+# --- the package name -------------------------------------------------------
+if [ -z "$package" ]; then
+  package=$(printf '%s' "$name" | LC_ALL=C tr '[:upper:]' '[:lower:]' \
+    | LC_ALL=C sed -E 's/[^a-z0-9]+/_/g; s/^_+//; s/_+$//')
+  [ -n "$package" ] || die "cannot derive a package name from '$name': pass one"
+  case "$package" in [0-9]*) package="app_$package" ;; esac
+fi
+printf '%s' "$package" | grep -Eq '^[a-z][a-z0-9_]*$' \
+  || die "package name '$package' must match ^[a-z][a-z0-9_]*\$ (lower snake case, a Dart identifier)"
+case "$package" in *__*|*_) die "package name '$package' may not hold a double or trailing underscore" ;; esac
+# Dart, Java, Kotlin and Swift words: the package ends up in a Dart import, a
+# Java package (the Android application id) and an iOS bundle id segment.
+reserved='abstract as assert associatedtype async await boolean break by byte case catch char class const constructor continue covariant default deferred deinit delegate do double dynamic else enum export extends extension external factory false field file fileprivate final finally float flutter for fun func function get goto hide if implements import in init inout instanceof int interface internal is late let library long mixin native new null object of on open operator package param private property protected protocol public receiver record required rethrow return self set setparam short show static strictfp subscript super switch sync synchronized test this throw throws transient true try typealias typedef typeof val value var void volatile when where while with yield'
+is_reserved() { case " $reserved " in *" $1 "*) return 0 ;; *) return 1 ;; esac; }
+if is_reserved "$package"; then
+  die "package name '$package' is a reserved word (Dart, Java, Kotlin, Swift) or a name pub refuses"
+fi
+
+# --- the target -------------------------------------------------------------
+defaulted=0
+if [ -z "$target" ]; then
+  target="${NEW_FLUTTER_APP_ROOT:-$PWD}/$package"
+  defaulted=1
+fi
+case "$target" in /*) ;; *) target="$(pwd)/$target" ;; esac
+# Resolve `..` and links (the target may not exist yet).
+target=$(python3 -I -c 'import os, sys; print(os.path.realpath(sys.argv[1]))' "$target")
+[ -n "$target" ] && [ "$target" != "/" ] || die 'the target is the root or empty'
+skill_dir=$(cd "$here/.." && pwd -P)
+case "$target/" in
+  "$skill_dir"/*) die "target is inside the skill ($skill_dir): choose a project folder" ;;
+esac
+if [ -e "$target" ]; then
+  [ -d "$target" ] || die "target exists and is not a directory: $target"
+  [ -z "$(ls -A "$target")" ] || die "target is not empty: $target"
+fi
+
+# --- the org ----------------------------------------------------------------
+if [ -z "$org" ]; then
+  org="dev.$(printf '%s' "$package" | tr -d '_')"
+fi
+for seg in $(printf '%s' "$org" | tr '.' ' '); do
+  ! is_reserved "$seg" || die "org segment '$seg' is a reserved word"
+done
+printf '%s' "$org" | grep -Eq '^[a-z][a-z0-9]*(\.[a-z][a-z0-9_]*)+$' \
+  || die "org '$org' must be a reverse domain such as com.acme"
+
+echo "package: $package"
+echo "app name: $name"
+[ -z "$name_ar" ] || echo "arabic name: $name_ar"
+echo "org: $org"
+echo "target: $target"
+[ "$defaulted" -eq 0 ] || echo "(target defaulted; pass <target-dir> <package_name> \"<App Name>\" to choose another)"
+[ "$dry" -eq 0 ] || exit 0
+
+command -v flutter >/dev/null 2>&1 || die 'flutter is not on PATH'
+command -v rsync >/dev/null 2>&1 || die 'rsync is not on PATH'
+command -v python3 >/dev/null 2>&1 || die 'python3 is not on PATH'
+
+# The platform setup the notification and permission plugins need: Android
+# permissions and core-library desugaring, the iOS usage strings and
+# notification delegate, and (after a CocoaPods configuration run) the
+# permission macros in the Podfile. Each edit refuses to continue when the
+# template it expects has changed, instead of writing a half-patched app.
+patch_platforms() {
+  local target=$1
+  python3 -I - "$target" <<'PY'
+import pathlib, sys
+
+root = pathlib.Path(sys.argv[1])
+
+
+def edit(rel, change):
+    path = root / rel
+    text = path.read_text()
+    new = change(text)
+    if new == text:
+        sys.exit(f"new-flutter-app: could not patch {rel}; its template changed")
+    path.write_text(new)
+
+
+def manifest(t):
+    # Photos: READ_MEDIA_IMAGES from Android 13, the older storage
+    # permission (capped at 32) before it. Without the manifest entry the
+    # plugin can never grant the photo library.
+    lines = ('    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n'
+             '    <uses-permission android:name="android.permission.CAMERA"/>\n'
+             '    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>\n'
+             '    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>\n')
+    return t.replace("    <application", lines + "    <application", 1)
+
+
+def gradle(t):
+    t = t.replace("compileOptions {",
+                  "compileOptions {\n        isCoreLibraryDesugaringEnabled = true", 1)
+    return t + ('\ndependencies {\n'
+                '    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")\n'
+                '}\n')
+
+
+def plist(t):
+    keys = ("\t<key>CFBundleLocalizations</key>\n"
+            "\t<array>\n\t\t<string>en</string>\n\t\t<string>ar</string>\n\t</array>\n"
+            "\t<key>NSCameraUsageDescription</key>\n"
+            "\t<string>Your camera is used only to take a photo you choose to add.</string>\n"
+            "\t<key>NSPhotoLibraryUsageDescription</key>\n"
+            "\t<string>Your photos are used only to choose a picture you want to add.</string>\n")
+    i = t.rindex("</dict>")
+    return t[:i] + keys + t[i:]
+
+
+def delegate(t):
+    t = t.replace("import UIKit\n", "import UIKit\nimport UserNotifications\n", 1)
+    anchor = "    return super.application(application, didFinishLaunchingWithOptions"
+    return t.replace(anchor,
+                     "    UNUserNotificationCenter.current().delegate = self\n" + anchor, 1)
+
+
+edit("android/app/src/main/AndroidManifest.xml", manifest)
+edit("android/app/build.gradle.kts", gradle)
+edit("ios/Runner/Info.plist", plist)
+edit("ios/Runner/AppDelegate.swift", delegate)
+
+
+def project(t):
+    # ios/Runner/ar.lproj/InfoPlist.strings is shipped by the kit; the Xcode
+    # project must list it (a variant group in the Runner resources) or the
+    # app does not bundle it.
+    build_id, group_id, ref_id = "7A17000000000000000000B1", "7A17000000000000000000B2", "7A17000000000000000000B3"
+    t = t.replace("/* End PBXBuildFile section */",
+        f"\t\t{build_id} /* InfoPlist.strings in Resources */ = {{isa = PBXBuildFile; fileRef = {group_id} /* InfoPlist.strings */; }};\n"
+        "/* End PBXBuildFile section */", 1)
+    t = t.replace("/* End PBXFileReference section */",
+        f"\t\t{ref_id} /* ar */ = {{isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = \"<group>\"; }};\n"
+        "/* End PBXFileReference section */", 1)
+    t = t.replace("/* End PBXVariantGroup section */",
+        f"\t\t{group_id} /* InfoPlist.strings */ = {{\n\t\t\tisa = PBXVariantGroup;\n\t\t\tchildren = (\n\t\t\t\t{ref_id} /* ar */,\n\t\t\t);\n"
+        "\t\t\tname = InfoPlist.strings;\n\t\t\tsourceTree = \"<group>\";\n\t\t};\n"
+        "/* End PBXVariantGroup section */", 1)
+    info = "\t\t\t\t97C147021CF9000F007C117D /* Info.plist */,\n"
+    t = t.replace(info, info + f"\t\t\t\t{group_id} /* InfoPlist.strings */,\n", 1)
+    res = "\t\t\t\t97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,\n"
+    t = t.replace(res, res + f"\t\t\t\t{build_id} /* InfoPlist.strings in Resources */,\n", 1)
+    return t.replace("\t\t\t\ten,\n\t\t\t\tBase,\n", "\t\t\t\ten,\n\t\t\t\tar,\n\t\t\t\tBase,\n", 1)
+
+
+edit("ios/Runner.xcodeproj/project.pbxproj", project)
+PY
+  # The Podfile exists only after a CocoaPods configuration run, which is
+  # macOS-only (Xcode and CocoaPods). Elsewhere the step is skipped with the
+  # manual instruction.
+  # NEW_FLUTTER_APP_OS stands in for `uname -s` (the tests fake the platform).
+  if [ "${NEW_FLUTTER_APP_OS:-$(uname -s)}" != "Darwin" ]; then
+    echo "new-flutter-app: not macOS: the iOS permission macros were not added." >&2
+    echo "On a Mac run 'flutter build ios --config-only --no-codesign' in $target," >&2
+    echo "then add PERMISSION_NOTIFICATIONS=1, PERMISSION_CAMERA=1 and PERMISSION_PHOTOS=1" >&2
+    echo "to GCC_PREPROCESSOR_DEFINITIONS in ios/Podfile's post_install (see references/flutter-kit.md)." >&2
+    return 0
+  fi
+  # On macOS a failed step aborts: a broken iOS project must never look done.
+  if ! (cd "$target" && flutter build ios --config-only --no-codesign >/dev/null 2>&1); then
+    echo "new-flutter-app: the iOS configuration step failed ('flutter build ios --config-only')." >&2
+    echo "The iOS project is incomplete (no permission macros). Fix Xcode or CocoaPods," >&2
+    echo "delete $target and run again." >&2
+    exit 1
+  fi
+  if [ ! -f "$target/ios/Podfile" ]; then
+    echo "new-flutter-app: no ios/Podfile (a Swift Package Manager build)." >&2
+    echo "The permission macros need the owner's decision; stopping." >&2
+    exit 1
+  fi
+  python3 -I - "$target/ios/Podfile" <<'PY'
+import sys
+
+path = sys.argv[1]
+text = open(path).read()
+anchor = "    flutter_additional_ios_build_settings(target)\n"
+macros = ("    target.build_configurations.each do |config|\n"
+          "      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [\n"
+          "        '$(inherited)',\n"
+          "        'PERMISSION_NOTIFICATIONS=1',\n"
+          "        'PERMISSION_CAMERA=1',\n"
+          "        'PERMISSION_PHOTOS=1',\n"
+          "      ]\n"
+          "    end\n")
+if anchor not in text:
+    sys.exit("new-flutter-app: the Podfile has no flutter_additional_ios_build_settings line")
+open(path, "w").write(text.replace(anchor, anchor + macros, 1))
+PY
+}
+
+mkdir -p "$target"
+on_exit() {
+  rc=$?
+  if [ "$rc" -ne 0 ]; then
+    echo "new-flutter-app: failed; $target is left as it is for inspection (delete it before retrying)" >&2
+  fi
+}
+trap on_exit EXIT
+
+echo '== platform folders (flutter create)'
+flutter create --org "$org" --project-name "$package" --platforms ios,android,web "$target" >/dev/null
+rm -rf "$target/lib" "$target/test"
+
+echo '== copy the kit'
+# pubspec.lock travels: it pins every package, transitive ones too, to the
+# versions the kit is proven against.
+rsync -a --exclude build --exclude .dart_tool --exclude coverage \
+  --exclude .DS_Store "$kit/" "$target/"
+
+echo '== rename'
+python3 -I - "$target" "$package" "$name" "$name_ar" <<'PY'
+import os
+import re
+import sys
+
+target, package, name, name_ar = sys.argv[1:5]
+skip_dirs = {".git", ".dart_tool", "build", "coverage", "Pods", ".gradle"}
+
+
+def is_text(path):
+    try:
+        with open(path, "rb") as f:
+            return b"\0" not in f.read(4096)
+    except OSError:
+        return False
+
+
+for root, dirs, files in os.walk(target):
+    dirs[:] = [d for d in dirs if d not in skip_dirs]
+    for fn in files:
+        p = os.path.join(root, fn)
+        if fn == "pubspec.lock" or not is_text(p):
+            continue
+        with open(p, encoding="utf-8") as f:
+            s = f.read()
+        t = s.replace("kit_app", package).replace("Kit App", name)
+        if t != s:
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(t)
+
+
+def sub_file(rel, pattern, repl):
+    p = os.path.join(target, rel)
+    if not os.path.exists(p):
+        return
+    with open(p, encoding="utf-8") as f:
+        s = f.read()
+    t = re.sub(pattern, repl, s)
+    if t != s:
+        with open(p, "w", encoding="utf-8") as f:
+            f.write(t)
+
+
+if name_ar:
+    sub_file(
+        "lib/l10n/app_ar.arb",
+        r'("appName":\s*")[^"]*(")',
+        lambda m: m.group(1) + name_ar + m.group(2),
+    )
+sub_file(
+    "web/index.html",
+    r'(<meta name="description" content=")[^"]*(")',
+    lambda m: m.group(1) + name + m.group(2),
+)
+with open(os.path.join(target, "README.md"), "w", encoding="utf-8") as f:
+    f.write(
+        "# " + name + "\n\n"
+        "Run `bash tool/verify.sh` before every commit, and\n"
+        "`flutter run --dart-define-from-file=env/dev.json` to start the app.\n"
+    )
+sub_file(
+    "ios/Runner/Info.plist",
+    r"(<key>CFBundle(?:Display)?Name</key>\s*<string>)[^<]*(</string>)",
+    lambda m: m.group(1) + name + m.group(2),
+)
+# The label is a string resource, so the Arabic home screen can have its own.
+sub_file(
+    "android/app/src/main/AndroidManifest.xml",
+    r'android:label="[^"]*"',
+    lambda m: 'android:label="@string/app_name"',
+)
+
+
+def write_label(folder, label):
+    d = os.path.join(target, "android/app/src/main/res", folder)
+    os.makedirs(d, exist_ok=True)
+    with open(os.path.join(d, "strings.xml"), "w", encoding="utf-8") as f:
+        f.write(
+            '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n'
+            '    <string name="app_name">' + label + "</string>\n</resources>\n"
+        )
+
+
+write_label("values", name)
+if name_ar:
+    write_label("values-ar", name_ar)
+    with open(
+        os.path.join(target, "ios/Runner/ar.lproj/InfoPlist.strings"),
+        "a",
+        encoding="utf-8",
+    ) as f:
+        f.write('"CFBundleDisplayName" = "' + name_ar + '";\n')
+sub_file("web/index.html", r"<title>[^<]*</title>", lambda m: "<title>" + name + "</title>")
+sub_file(
+    "web/index.html",
+    r'(<meta name="apple-mobile-web-app-title" content=")[^"]*(")',
+    lambda m: m.group(1) + name + m.group(2),
+)
+sub_file(
+    "web/manifest.json",
+    r'("(?:name|short_name|description)":\s*")[^"]*(")',
+    lambda m: m.group(1) + name + m.group(2),
+)
+PY
+
+echo '== platform setup (permissions, notifications)'
+patch_platforms "$target"
+
+echo '== env files'
+cp "$target/env/dev.example.json" "$target/env/dev.json"
+cp "$target/env/prod.example.json" "$target/env/prod.json"
+touch "$target/.gitignore"
+grep -qxF 'env/*.json' "$target/.gitignore" || printf '\n# Real env files hold keys.\nenv/*.json\n' >>"$target/.gitignore"
+grep -qxF '!env/*.example.json' "$target/.gitignore" || printf '!env/*.example.json\n' >>"$target/.gitignore"
+
+cd "$target"
+echo '== pub get, gen-l10n'
+# The kit's lock as it is: a resolution that would change it fails here.
+flutter pub get --enforce-lockfile >/dev/null
+flutter gen-l10n
+
+# A longer or shorter package name can change import order and line wrapping.
+echo '== format and import order'
+dart fix --apply --code=directives_ordering >/dev/null 2>&1 || true
+dart run tool/strict_dart_files.dart | xargs dart format >/dev/null
+
+if [ ! -d .git ]; then
+  git init -q
+fi
+git add -A >/dev/null 2>&1 || true
+
+trap - EXIT
+ar_step=''
+if [ -z "$name_ar" ]; then
+  ar_step=$'\n     Translate the Arabic name: "appName" in lib/l10n/app_ar.arb is still the Latin name, then run flutter gen-l10n.\n     For the Arabic home screen, add "CFBundleDisplayName" to ios/Runner/ar.lproj/InfoPlist.strings and an app_name in android/app/src/main/res/values-ar/strings.xml.'
+fi
+cat <<NEXT
+
+Done: $name is ready at $target
+
+Next:
+  1. cd "$target"$ar_step
+  2. Fill lib/core/theme/brand.dart (colors, font); replace the logo in assets/images/.
+  3. Set the hosts in env/dev.json and env/prod.json (BASE_URL); never commit them.
+  4. Replace AppRole in lib/core/session with your roles.
+  5. Copy lib/features/settings to start the first feature.
+  6. Run: bash tool/verify.sh
+  7. Change the bundle id prefix ($org) to your own domain before a release.
+Read references/flutter-kit.md in the skill for the module map.
+NEXT

@@ -1,0 +1,4 @@
+/* The reasons iOS shows in its permission dialogs, in Arabic. Rewrite them
+   for your product, together with the English ones in Info.plist. */
+"NSCameraUsageDescription" = "تُستخدم الكاميرا فقط لالتقاط صورة تختار إضافتها.";
+"NSPhotoLibraryUsageDescription" = "تُستخدم صورك فقط لاختيار صورة ترغب في إضافتها.";

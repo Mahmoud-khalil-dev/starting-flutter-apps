@@ -1,0 +1,357 @@
+{
+  "@@locale": "en",
+  "errorNoConnection": "You appear to be offline. Please check your connection and try again.",
+  "@errorNoConnection": {
+    "description": "No connection before a request was sent"
+  },
+  "errorTimeout": "The connection is taking longer than usual. Please try again.",
+  "@errorTimeout": {
+    "description": "Connect timeout, nothing reached the server"
+  },
+  "errorOutcomeUnknown": "We could not confirm whether your request went through. Please check before you try again.",
+  "@errorOutcomeUnknown": {
+    "description": "Send or receive timeout, outcome unknown"
+  },
+  "errorServer": "Something went wrong on our side. Please try again in a moment.",
+  "@errorServer": {
+    "description": "Server error 5xx"
+  },
+  "errorSessionEnded": "Your session has ended. Please sign in again.",
+  "@errorSessionEnded": {
+    "description": "401"
+  },
+  "errorForbidden": "This page is not available for your account.",
+  "@errorForbidden": {
+    "description": "403"
+  },
+  "errorNotFound": "We could not find what you were looking for.",
+  "@errorNotFound": {
+    "description": "404"
+  },
+  "errorConflict": "This has just been changed. Please review it and try again.",
+  "@errorConflict": {
+    "description": "409 without a backend message"
+  },
+  "errorUnknown": "Something went wrong. Please try again.",
+  "@errorUnknown": {
+    "description": "Any other failure"
+  },
+  "bootFailureTitle": "We could not start the app",
+  "@bootFailureTitle": {
+    "description": "Title of the screen shown when the app cannot finish starting"
+  },
+  "bootFailureBody": "Something went wrong while opening the app. Please try again in a moment.",
+  "@bootFailureBody": {
+    "description": "Body of the start-up failure screen"
+  },
+  "bootFailureRetry": "Try again",
+  "@bootFailureRetry": {
+    "description": "Retry button of the start-up failure screen"
+  },
+  "kitEmptyTitle": "Nothing here yet",
+  "@kitEmptyTitle": {
+    "description": "Default title of an empty view"
+  },
+  "kitErrorTitle": "This could not be loaded",
+  "@kitErrorTitle": {
+    "description": "Title of the error view"
+  },
+  "kitOfflineTitle": "You are offline",
+  "@kitOfflineTitle": {
+    "description": "Title of the offline view"
+  },
+  "kitRetry": "Try again",
+  "@kitRetry": {
+    "description": "Retry action on an error view"
+  },
+  "navHome": "Home",
+  "@navHome": {
+    "description": "Tab"
+  },
+  "navExpand": "Expand the sidebar",
+  "@navExpand": {
+    "description": "Web sidebar toggle"
+  },
+  "navCollapse": "Collapse the sidebar",
+  "@navCollapse": {
+    "description": "Web sidebar toggle"
+  },
+  "navActionRequired": "{label}, action required",
+  "@navActionRequired": {
+    "description": "Screen-reader label of a tab with a badge",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "startupRetryAction": "Try again",
+  "@startupRetryAction": {
+    "description": "Splash retry button"
+  },
+  "startupRetryBody": "We are still opening your saved session.",
+  "@startupRetryBody": {
+    "description": "Splash, when the saved session cannot be read yet"
+  },
+  "appName": "Kit App",
+  "@appName": {
+    "description": "The app's name, shown at the top of the sidebar"
+  },
+  "navSettings": "Settings",
+  "@navSettings": {
+    "description": "Tab"
+  },
+  "homeEmptyTitle": "Your app starts here",
+  "@homeEmptyTitle": {
+    "description": "Title of the empty Home screen"
+  },
+  "homeEmptyBody": "Your first screen will appear here once it is ready.",
+  "@homeEmptyBody": {
+    "description": "Body of the empty Home screen"
+  },
+  "loaderLabel": "Loading",
+  "@loaderLabel": {
+    "description": "Screen-reader label of a loading indicator"
+  },
+  "kitDone": "Done",
+  "@kitDone": {
+    "description": "Confirms a wheel picker"
+  },
+  "kitDestructiveHint": "Cannot be undone",
+  "@kitDestructiveHint": {
+    "description": "Screen-reader hint on a destructive dialog action"
+  },
+  "kitPastTime": "Please choose a time later than now.",
+  "@kitPastTime": {
+    "description": "Time picker error when a past time is picked for today"
+  },
+  "kitUpdateTitle": "An update is ready",
+  "@kitUpdateTitle": {
+    "description": "Update banner title"
+  },
+  "kitUpdateBody": "Restart to finish it. It takes a few seconds.",
+  "@kitUpdateBody": {
+    "description": "Update banner body"
+  },
+  "kitUpdateRestart": "Restart",
+  "@kitUpdateRestart": {
+    "description": "Update banner action"
+  },
+  "kitUpdateLater": "Later",
+  "@kitUpdateLater": {
+    "description": "Update banner action"
+  },
+  "kitOffline": "No internet connection",
+  "@kitOffline": {
+    "description": "Connection banner while offline"
+  },
+  "kitBackOnline": "Back online",
+  "@kitBackOnline": {
+    "description": "Connection banner for 2 seconds after reconnecting"
+  },
+  "kitSlowConnection": "The connection is slow",
+  "@kitSlowConnection": {
+    "description": "Connection banner when requests time out; also the title of the retry dialog"
+  },
+  "loaderLongWait": "Still preparing this. Thank you for waiting.",
+  "@loaderLongWait": {
+    "description": "Shown under the logo loader after a long wait; quiet and courteous"
+  },
+  "kitNotNow": "Not now",
+  "@kitNotNow": {
+    "description": "Declines a prompt without consequence, such as the retry dialog"
+  },
+  "settingsAppearanceTitle": "Appearance",
+  "@settingsAppearanceTitle": {
+    "description": "Title of the theme group and its section"
+  },
+  "settingsThemeSystem": "Automatic",
+  "@settingsThemeSystem": {
+    "description": "Theme choice: follow the device"
+  },
+  "settingsThemeLight": "Light",
+  "@settingsThemeLight": {
+    "description": "Theme choice"
+  },
+  "settingsThemeDark": "Dark",
+  "@settingsThemeDark": {
+    "description": "Theme choice"
+  },
+  "settingsLanguageTitle": "Language",
+  "@settingsLanguageTitle": {
+    "description": "Title of the language group and its section"
+  },
+  "settingsLanguageSystem": "Device",
+  "@settingsLanguageSystem": {
+    "description": "Language choice: follow the device language"
+  },
+  "settingsLanguageEnglish": "English",
+  "@settingsLanguageEnglish": {
+    "description": "Language choice, always written in its own language"
+  },
+  "settingsLanguageArabic": "العربية",
+  "@settingsLanguageArabic": {
+    "description": "Language choice, always written in its own language"
+  },
+  "settingsTextSizeTitle": "Text size",
+  "@settingsTextSizeTitle": {
+    "description": "Title of the text size group and its section"
+  },
+  "settingsTextSizeValue": "{percent}%",
+  "@settingsTextSizeValue": {
+    "description": "The text size as a percentage",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "validationRequired": "Please fill this in.",
+  "@validationRequired": {"description": "Form error: a required field is empty."},
+  "validationEmail": "Please enter a valid email address.",
+  "@validationEmail": {"description": "Form error: the email is not valid."},
+  "validationPhone": "Please enter a valid phone number.",
+  "@validationPhone": {"description": "Form error: the phone number is not valid."},
+  "validationPassword": "{count, plural, =1{Please use at least {shown} character, with a letter and a number.} other{Please use at least {shown} characters, with a letter and a number.}}",
+  "@validationPassword": {"description": "Form error: the password is too weak. count picks the plural form; shown is the same number, already localized.", "placeholders": {"count": {"type": "int"}, "shown": {"type": "String"}}},
+  "validationTooShort": "{count, plural, =1{Please use at least {shown} character.} other{Please use at least {shown} characters.}}",
+  "@validationTooShort": {"description": "Form error: the text is too short. count picks the plural form; shown is the same number, already localized.", "placeholders": {"count": {"type": "int"}, "shown": {"type": "String"}}},
+  "validationTooLong": "{count, plural, =1{Please keep this to {shown} character or fewer.} other{Please keep this to {shown} characters or fewer.}}",
+  "@validationTooLong": {"description": "Form error: the text is too long. count picks the plural form; shown is the same number, already localized.", "placeholders": {"count": {"type": "int"}, "shown": {"type": "String"}}},
+  "validationMismatch": "These entries do not match.",
+  "@validationMismatch": {"description": "Form error: a confirmation field differs from the first."},
+  "authSignInTitle": "Welcome back",
+  "@authSignInTitle": {"description": "Sign-in screen: the title."},
+  "authSignInBody": "Sign in to continue.",
+  "@authSignInBody": {"description": "Sign-in screen: the line under the title."},
+  "authIdentifierLabel": "Email or phone",
+  "@authIdentifierLabel": {"description": "Label of the field that takes an email or a phone number (sign-in, forgot password)."},
+  "authPasswordLabel": "Password",
+  "@authPasswordLabel": {"description": "Label of a password field (sign-in, sign-up)."},
+  "authShowPassword": "Show password",
+  "@authShowPassword": {"description": "Tooltip of the button that reveals a password field."},
+  "authHidePassword": "Hide password",
+  "@authHidePassword": {"description": "Tooltip of the button that hides a password field."},
+  "authSignInAction": "Sign in",
+  "@authSignInAction": {"description": "Sign-in screen: the main button."},
+  "authForgotLink": "Forgot your password?",
+  "@authForgotLink": {"description": "Sign-in screen: link to the forgot-password screen."},
+  "authNoAccountLink": "New here? Create an account",
+  "@authNoAccountLink": {"description": "Sign-in screen: link to the sign-up screen."},
+  "authSignUpTitle": "Create your account",
+  "@authSignUpTitle": {"description": "Sign-up screen: the title."},
+  "authSignUpBody": "It only takes a moment.",
+  "@authSignUpBody": {"description": "Sign-up screen: the line under the title."},
+  "authNameLabel": "Full name",
+  "@authNameLabel": {"description": "Label of the name field (sign-up, complete profile)."},
+  "authEmailLabel": "Email",
+  "@authEmailLabel": {"description": "Sign-up screen: label of the email field."},
+  "authPhoneLabel": "Phone number",
+  "@authPhoneLabel": {"description": "Sign-up screen: label of the phone field."},
+  "authConfirmPasswordLabel": "Confirm password",
+  "@authConfirmPasswordLabel": {"description": "Label of the field that repeats the new password."},
+  "authSignUpAction": "Create account",
+  "@authSignUpAction": {"description": "Sign-up screen: the main button."},
+  "authHaveAccountLink": "Already have an account? Sign in",
+  "@authHaveAccountLink": {"description": "Link back to the sign-in screen (sign-up, forgot password)."},
+  "authVerifyTitle": "Confirm your code",
+  "@authVerifyTitle": {"description": "Verify screen: the title."},
+  "authVerifyBody": "Please enter the code we sent you.",
+  "@authVerifyBody": {"description": "Verify screen: the line under the title."},
+  "authCodeLabel": "Code",
+  "@authCodeLabel": {"description": "Label of the one-time code field (verify, reset password)."},
+  "authVerifyAction": "Confirm",
+  "@authVerifyAction": {"description": "Verify screen: the main button."},
+  "authResendAction": "Send a new code",
+  "@authResendAction": {"description": "Verify screen: the button that asks for another code."},
+  "authResendIn": "You can ask for a new code in {time}.",
+  "@authResendIn": {"description": "Under the code field while the resend button waits. time is a localized mm:ss countdown from AppFormats.formatDuration.", "placeholders": {"time": {"type": "String"}}},
+  "authCodeSent": "A new code is on its way.",
+  "@authCodeSent": {"description": "Verify screen: the snackbar after a new code is sent."},
+  "authForgotTitle": "Reset your password",
+  "@authForgotTitle": {"description": "Forgot-password screen: the title."},
+  "authForgotBody": "Enter your email or phone and we will send you a code.",
+  "@authForgotBody": {"description": "Forgot-password screen: the line under the title."},
+  "authSendCodeAction": "Send code",
+  "@authSendCodeAction": {"description": "Forgot-password screen: the main button."},
+  "authResetTitle": "Choose a new password",
+  "@authResetTitle": {"description": "Reset-password screen: the title."},
+  "authResetBody": "Please enter the code and your new password.",
+  "@authResetBody": {"description": "Reset-password screen: the line under the title."},
+  "authNewPasswordLabel": "New password",
+  "@authNewPasswordLabel": {"description": "Reset-password screen: label of the new password field."},
+  "authResetAction": "Save password",
+  "@authResetAction": {"description": "Reset-password screen: the main button."},
+  "authPasswordSaved": "Your password is saved. Please sign in.",
+  "@authPasswordSaved": {"description": "Snackbar after a password reset, on the sign-in screen."},
+  "authCompleteTitle": "One last detail",
+  "@authCompleteTitle": {"description": "Complete-profile screen: the title."},
+  "authCompleteBody": "Please tell us your name to finish.",
+  "@authCompleteBody": {"description": "Complete-profile screen: the line under the title."},
+  "authCompleteAction": "Continue",
+  "@authCompleteAction": {"description": "Complete-profile screen: the main button."},
+  "authSignOutAction": "Sign out",
+  "@authSignOutAction": {"description": "Quiet button to leave an account (Settings, verify, complete profile, status screens)."},
+  "authBlockedTitle": "Your account is paused",
+  "@authBlockedTitle": {"description": "Status screen for a blocked account: the title."},
+  "authBlockedBody": "Please contact support to restore access.",
+  "@authBlockedBody": {"description": "Status screen for a blocked account: the line under the title."},
+  "authNoAccessTitle": "This account has no access here",
+  "@authNoAccessTitle": {"description": "Status screen for an account with no role in this app: the title."},
+  "authNoAccessBody": "Please sign in with another account.",
+  "@authNoAccessBody": {"description": "Status screen for an account with no role in this app: the line under the title."},
+  "authInvalidCredentials": "That email, phone or password does not match our records.",
+  "@authInvalidCredentials": {"description": "Sign-in screen: shown under the form when the details are wrong."},
+  "errorTooManyRequests": "You have tried a few times. Please wait a moment and try again.",
+  "@errorTooManyRequests": {"description": "429 without a wait time (a failure shown under a form)."},
+  "errorTooManyRequestsIn": "You have tried a few times. Please try again in {time}.",
+  "@errorTooManyRequestsIn": {"description": "429 with the wait the server asked for. time is a localized mm:ss from AppFormats.formatDuration.", "placeholders": {"time": {"type": "String"}}},
+  "errorCodeExpired": "That code has expired. Please ask for a new one.",
+  "@errorCodeExpired": {"description": "410: the one-time code has expired."},
+  "authBackToSignInLink": "Remembered it? Back to sign in",
+  "@authBackToSignInLink": {"description": "Link back to the sign-in screen on forgot-password and reset-password."},
+  "permissionNotificationsTitle": "Stay informed",
+  "@permissionNotificationsTitle": {"description": "Permission prompt: title for notifications."},
+  "permissionNotificationsBody": "Allow notifications so we can let you know when something needs your attention.",
+  "@permissionNotificationsBody": {"description": "Permission prompt: why the app asks for notifications."},
+  "permissionCameraTitle": "Use your camera",
+  "@permissionCameraTitle": {"description": "Permission prompt: title for the camera."},
+  "permissionCameraBody": "Allow camera access to take your profile photo.",
+  "@permissionCameraBody": {"description": "Permission prompt: why the app asks for the camera."},
+  "permissionPhotosTitle": "Choose from your photos",
+  "@permissionPhotosTitle": {"description": "Permission prompt: title for the photo library."},
+  "permissionPhotosBody": "Allow photo access to choose your profile photo.",
+  "@permissionPhotosBody": {"description": "Permission prompt: why the app asks for the photo library."},
+  "permissionAllow": "Allow",
+  "@permissionAllow": {"description": "Permission prompt: the button that shows the system dialog."},
+  "permissionOpenSettings": "Open Settings",
+  "@permissionOpenSettings": {"description": "Permission prompt: the button that opens the system settings for the app."},
+  "permissionDeniedBody": "Access is turned off. You can turn it on in Settings.",
+  "@permissionDeniedBody": {"description": "Permission prompt: the line when the permission was refused."},
+  "permissionRevokedBody": "Access was turned off in Settings. You can turn it on again there.",
+  "@permissionRevokedBody": {"description": "Permission prompt: the line when a permission once granted was turned off in Settings."},
+  "permissionLimitedBody": "You have shared some of your photos. You can share more in Settings.",
+  "@permissionLimitedBody": {"description": "Permission prompt: the line when only some photos are shared."},
+  "permissionGranted": "Access is on.",
+  "@permissionGranted": {"description": "Permission prompt: the line when the permission is granted."},
+  "permissionUnavailable": "This is not available on this device.",
+  "@permissionUnavailable": {"description": "Permission prompt: the line when the device or browser cannot offer it."},
+  "notificationChannelGeneral": "General",
+  "@notificationChannelGeneral": {"description": "Android notification channel: the visible name of the general channel."},
+  "permissionBrowserBody": "Access is turned off. You can allow it in your browser's site settings.",
+  "@permissionBrowserBody": {"description": "Permission prompt on the web: the line when the browser refused; no button, the user changes it in the browser's site settings."},
+  "mediaTakePhoto": "Take a photo",
+  "@mediaTakePhoto": {"description": "Photo sheet: the row that opens the camera."},
+  "mediaChoosePhoto": "Choose from your photos",
+  "@mediaChoosePhoto": {"description": "Photo sheet: the row that opens the photo picker."},
+  "mediaChangePhoto": "Change your photo",
+  "@mediaChangePhoto": {"description": "The profile photo's button label and the photo sheet's title."},
+  "mediaProfilePhoto": "Profile photo",
+  "@mediaProfilePhoto": {"description": "The accessible name of a profile photo."},
+  "mediaUploading": "Uploading, {percent}",
+  "@mediaUploading": {"description": "Shown under the photo while it uploads; the percent is already formatted, with the screen's digits.", "placeholders": {"percent": {"type": "String"}}},
+  "mediaUploadFailed": "Your photo could not be uploaded.",
+  "@mediaUploadFailed": {"description": "The line shown when a photo upload failed."},
+  "mediaImageUnavailable": "Image unavailable",
+  "@mediaImageUnavailable": {"description": "The accessible name of the icon shown where an image could not load."}
+}

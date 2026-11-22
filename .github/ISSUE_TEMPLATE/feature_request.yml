@@ -1,0 +1,18 @@
+name: Feature request
+description: Suggest a step, rule, template or kit module.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What goes wrong on day 0 without this?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: The change, and the check that would enforce it if it is a rule.
+    validations:
+      required: true

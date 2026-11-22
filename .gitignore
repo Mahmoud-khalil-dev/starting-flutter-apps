@@ -1,0 +1,9 @@
+.DS_Store
+*.swp
+.idea/
+.vscode/
+# The Flutter kit is a template: never commit build output or real env files
+skills/starting-new-projects/assets/flutter-kit/.dart_tool/
+skills/starting-new-projects/assets/flutter-kit/build/
+skills/starting-new-projects/assets/flutter-kit/env/*.json
+!skills/starting-new-projects/assets/flutter-kit/env/*.example.json

@@ -1,0 +1,33 @@
+name: Bug report
+description: Something in the skill, a template, the scaffolder or the Flutter kit does not work.
+labels: [bug]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [SKILL.md or references, Templates, new-flutter-app scaffolder, Flutter kit, Plugin install]
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run ...
+        2. See ...
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "Agent and version, OS, Flutter version if relevant"
+  - type: markdown
+    attributes:
+      value: "Do not paste keys, tokens or real env files. Report security issues privately (see SECURITY.md)."
