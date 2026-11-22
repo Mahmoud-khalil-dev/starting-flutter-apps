@@ -1,6 +1,6 @@
 # starting-new-projects
 
-[![Validate](https://github.com/Mahmoud-khalil-dev/starting-new-project/actions/workflows/validate.yml/badge.svg)](https://github.com/Mahmoud-khalil-dev/starting-new-project/actions/workflows/validate.yml)
+[![Validate](https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/actions/workflows/validate.yml/badge.svg)](https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skill-SKILL.md-6e56cf)](skills/starting-new-projects/SKILL.md)
 
@@ -41,14 +41,14 @@ Works with Claude Code and any agent that reads `SKILL.md` skills (Codex, Gemini
 ### Claude Code (plugin)
 
 ```text
-/plugin marketplace add Mahmoud-khalil-dev/starting-new-project
+/plugin marketplace add Mahmoud-khalil-dev/starting-flutter-apps
 /plugin install starting-new-projects@starting-new-project
 ```
 
 ### Claude Code (personal skill)
 
 ```bash
-git clone https://github.com/Mahmoud-khalil-dev/starting-new-project.git
+git clone https://github.com/Mahmoud-khalil-dev/starting-flutter-apps.git
 cp -R starting-new-project/skills/starting-new-projects ~/.claude/skills/
 ```
 

@@ -5,6 +5,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Changed
+
+- The repository moved to `Mahmoud-khalil-dev/starting-flutter-apps`. Old links redirect; the plugin and marketplace names are unchanged until 2.0.0.
+
 ## [1.0.0] - 2026-11-22
 
 ### Added
@@ -17,5 +21,5 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Claude Code plugin and marketplace manifests.
 - `scripts/validate.sh` and a CI workflow that runs it.
 
-[Unreleased]: https://github.com/Mahmoud-khalil-dev/starting-new-project/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/Mahmoud-khalil-dev/starting-new-project/releases/tag/v1.0.0
+[Unreleased]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/releases/tag/v1.0.0
