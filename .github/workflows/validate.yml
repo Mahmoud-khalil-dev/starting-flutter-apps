@@ -52,3 +52,27 @@ jobs:
       - name: Build the new app for the web
         working-directory: ${{ runner.temp }}/e2e_app
         run: flutter build web --dart-define-from-file=env/dev.json
+
+  # Goldens compare pixels, and pixels differ between Linux and macOS, so
+  # they run here on macOS, where the reference images are made.
+  goldens:
+    runs-on: macos-15
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: skills/starting-new-projects/assets/flutter-kit
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.44.9
+          cache: true
+      - run: flutter pub get --enforce-lockfile
+      - run: flutter test --tags golden
+      - name: Keep the diffs when it fails
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: golden-failures
+          path: skills/starting-new-projects/assets/flutter-kit/test/goldens/failures/
