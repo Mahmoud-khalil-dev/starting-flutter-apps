@@ -129,6 +129,7 @@ skills/starting-new-projects/scripts/new-flutter-app ~/code/atlas atlas "Atlas" 
 | `--name-ar "<name>"` | Arabic app name (default: the Latin name) |
 | `--dry-run` | Print the plan and stop |
 | `NEW_FLUTTER_APP_ROOT` | Parent folder for a defaulted target (default: current folder) |
+| `NEW_FLUTTER_APP_SKIP_VERSION_CHECK` | Any value turns off the warning when your Flutter differs from the pinned one |
 
 The script refuses a target that is not empty and writes only inside it. It runs `flutter create` for iOS, Android and web, copies the kit, renames the package everywhere, and creates git-ignored `env/dev.json` and `env/prod.json` from the examples.
 
@@ -200,7 +201,7 @@ Please report vulnerabilities privately, as described in [SECURITY.md](SECURITY.
 You don't get certificate pinning, root or jailbreak detection, obfuscation, or a history secret scanner. Add those your app needs, and test them.
 
 **What the gates prove:**
-- The architecture rules read every import, export and part directive in new code, and fail the build on a boundary crossing.
+- The architecture rules read every `import`, `export` and `part` directive in new code, and fail the build on a boundary crossing.
 - Coverage is an 80% line floor for each Cubit in new code.
 - Traceability proves every task of a built milestone has a test with its id in the name, unless its plan marks the task manual. It doesn't prove the test checks the right thing. Code review does that.
 

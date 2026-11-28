@@ -8,6 +8,7 @@
 #          --name-ar "<Arabic name>"  the Arabic app name (default: the Latin one)
 #          --dry-run                print the plan and stop
 # Env:     NEW_FLUTTER_APP_ROOT     parent of a defaulted target (the current directory)
+#          NEW_FLUTTER_APP_SKIP_VERSION_CHECK  any value: no Flutter version warning
 #
 # It only writes inside the target. A target that is not empty is refused.
 set -euo pipefail
