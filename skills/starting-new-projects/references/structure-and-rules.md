@@ -47,7 +47,7 @@ Dependencies point one way: `presentation` to `domain` contract, `data` implemen
 Enforce all of it with an architecture test in the normal test run:
 
 1. Prefer an existing boundary tool where the stack has one (dependency-cruiser or eslint boundaries for TypeScript, import-linter style checks for Python or Go), or a small custom walker. Why: maintained tools beat a home-grown parser.
-2. Keep every rule as code in one rules file, with its reason in a comment beside it (for example `max-lines`, `cross-feature-import`, `core-imports-feature`, `presentation-imports-data`, `raw-host`, `ignore-comment`, `skipped-test`, `platform-check`, `stub-import`).
+2. Keep every rule as code in one rules file, with its reason in a comment beside it (for example `max-lines`, `cross-feature-import`, `core-imports-feature`, `presentation-imports-data`, `feature-barrel-exports-data`, `raw-host`, `ignore-comment`, `skipped-test`, `platform-check`, `stub-import`).
 3. Have a test walk the source files, apply each rule and fail with file, line and the rule's reason.
 4. Make the rules read whole files, not lines, so a wrapped call or an extra space hides nothing.
 5. To change a rule, change the rules file and `docs/ARCHITECTURE.md` in one change. **Never exempt a single file.** Why: per-file exemptions multiply until the rule means nothing; if a rule is wrong for one file it is wrong, so fix the rule.
