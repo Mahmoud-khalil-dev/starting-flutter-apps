@@ -12,7 +12,7 @@ Upgrading an app made with 1.2.0 or earlier: see "Behavior changes" in the 1.3.0
 ### Added
 
 - Architecture rule `feature-barrel-exports-data`: a feature file may not re-export anything under `data/` other than `data/models/`, from outside `data/` or from a models file, so a screen cannot reach the data layer through a barrel.
-- CI job `goldens`: the golden tests run on macOS, where the reference images are made, and keep the diff images when they fail.
+- CI job `goldens`: the golden tests run on macOS, where the reference images are made, and keep the diff images when they fail. A golden passes when at most 0.1% of its pixels differ, so antialiasing differences between Macs do not fail it.
 - Weekly CI run that scaffolds an app on the latest stable Flutter, as an early warning before the pin moves.
 - The scaffolder warns when the local Flutter differs from the pinned version, beta and dev versions included. Any non-empty `NEW_FLUTTER_APP_SKIP_VERSION_CHECK` turns the warning off.
 - `scripts/validate.sh` fails when the repository's and the kit's workflows pin different Flutter versions.
