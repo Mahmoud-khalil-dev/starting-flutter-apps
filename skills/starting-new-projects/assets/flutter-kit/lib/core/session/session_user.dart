@@ -3,8 +3,8 @@ import 'package:kit_app/core/network/json_read.dart';
 import 'package:kit_app/core/session/app_role.dart';
 
 /// The signed-in user as the session needs it. [raw] is the backend's user
-/// object as received, kept and saved unchanged, so a feature can read any
-/// field the kit does not name.
+/// object as received, so a feature can read any field the kit does not
+/// name while the app runs. Only [storedFields] are saved to the device.
 class SessionUser extends Equatable {
   const SessionUser({
     required this.raw,
@@ -25,6 +25,25 @@ class SessionUser extends Equatable {
   final String? email;
   final String? phone;
   final String? photo;
+
+  /// The user fields kept in SharedPreferences across restarts. Preferences
+  /// are not encrypted, so a field the backend adds (an ID number, an
+  /// address) stays off the device until someone lists it here on purpose.
+  static const storedFields = [
+    'id',
+    'role',
+    'status',
+    'name',
+    'email',
+    'phone',
+    'photo',
+  ];
+
+  /// The part of [user] that may be saved to the device.
+  static Map<String, dynamic> stored(Map<String, dynamic> user) => {
+    for (final key in storedFields)
+      if (user.containsKey(key)) key: user[key],
+  };
 
   static SessionUser? fromJson(Object? json) {
     final user = JsonRead.map(json);

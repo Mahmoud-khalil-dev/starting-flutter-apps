@@ -5,6 +5,23 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-28
+
+Upgrading an app made with 1.1.0 or earlier: see the 1.2.0 release notes on GitHub. The kit is copied into each app, so an existing app keeps the old code until you copy the changed files in.
+
+### Added
+
+- Architecture rules `core-imports-feature` and `presentation-imports-data`: core never imports a feature, and a screen never imports a data source, a repository implementation or an HTTP, storage or SDK package. The kit now enforces every boundary its docs name.
+- CI job `scaffold-e2e`: scaffolds a real app with the pinned Flutter, runs its `tool/verify.sh` and builds it for the web, so a scaffolder change that breaks new apps fails here.
+- The secret check scans tracked file contents for common key shapes, not only file names.
+
+### Changed
+
+- Web: the session token stays in memory instead of flutter_secure_storage, which writes to localStorage on the web. A reload signs the user out; keeping a web session needs an httpOnly cookie from the backend.
+- The auth interceptor sends the bearer only to the API origin (scheme, host and port), not to any request on the same host.
+- Only the named user fields are saved to SharedPreferences; the rest of the backend's user object stays in memory.
+- The analyze gate fails when `dart analyze` exits non-zero without reporting an issue.
+
 ## [1.1.0] - 2026-11-22
 
 ### Changed
@@ -26,6 +43,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Claude Code plugin and marketplace manifests.
 - `scripts/validate.sh` and a CI workflow that runs it.
 
-[Unreleased]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/releases/tag/v1.0.0

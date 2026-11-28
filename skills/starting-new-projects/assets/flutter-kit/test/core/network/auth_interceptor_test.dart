@@ -111,6 +111,32 @@ void main() {
     });
 
     test(
+      'KIT-T9: the same host on another scheme or port is not the API',
+      () async {
+        for (final url in [
+          'http://api.test/me',
+          'https://api.test:8443/me',
+        ]) {
+          final sent = await send(
+            RequestOptions(path: url, baseUrl: 'https://api.test'),
+          );
+          expect(
+            sent.headers.containsKey('Authorization'),
+            isFalse,
+            reason: url,
+          );
+        }
+        final explicitPort = await send(
+          RequestOptions(
+            path: 'https://api.test:443/me',
+            baseUrl: 'https://api.test',
+          ),
+        );
+        expect(explicitPort.headers['Authorization'], 'Bearer old');
+      },
+    );
+
+    test(
       'KIT-T9: a bearer on another host is removed, held token or not',
       () async {
         token = null;

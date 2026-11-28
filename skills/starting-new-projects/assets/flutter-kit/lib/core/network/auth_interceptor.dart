@@ -27,7 +27,17 @@ class AuthInterceptor extends Interceptor {
   final void Function() _onSessionExpired;
   String? _expiredToken;
 
-  /// The bearer goes only to the API host: an absolute URL on another host
+  /// Scheme, host and port all match the base URL. The host alone is not
+  /// enough: `http://` on the API host would send the bearer in clear text.
+  static bool _isApiOrigin(RequestOptions options) {
+    final to = options.uri;
+    final api = Uri.parse(options.baseUrl);
+    return to.scheme == api.scheme &&
+        to.host == api.host &&
+        to.port == api.port;
+  }
+
+  /// The bearer goes only to the API origin: an absolute URL on another host
   /// (a presigned upload, a CDN) never carries the session token, and any
   /// Authorization header on it is removed. On the API host a held
   /// token is attached; with none held, a header the caller set itself stays
@@ -37,8 +47,7 @@ class AuthInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     options.headers['Accept-Language'] = _readLanguage();
     final token = _readToken();
-    final sameHost = options.uri.host == Uri.parse(options.baseUrl).host;
-    if (!sameHost) {
+    if (!_isApiOrigin(options)) {
       options.headers.remove('Authorization');
     } else if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
