@@ -4,7 +4,7 @@
 #   scripts/validate.sh
 #
 # Checks: SKILL.md front matter, plugin manifests, every path SKILL.md names,
-# shell syntax, the scaffolder dry run, leaked secrets and machine paths.
+# shell syntax, one Flutter pin, the scaffolder dry run, leaked secrets and machine paths.
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
@@ -58,6 +58,12 @@ done < <(find "$root/scripts" "$skill/scripts" "$skill/assets/flutter-kit/tool" 
 if command -v shellcheck >/dev/null; then
   shellcheck -S error "$root/scripts/validate.sh" "$skill/scripts/new-flutter-app" && ok "shellcheck" || bad "shellcheck"
 fi
+
+echo "One Flutter pin"
+pins=$(cat "$root/.github/workflows/validate.yml" "$skill/assets/flutter-kit/.github/workflows/verify.yml" \
+  | sed -n 's/^ *flutter-version: *//p' | sort -u)
+[ "$(printf '%s\n' "$pins" | grep -c .)" -eq 1 ] && ok "flutter-version $pins in every workflow" \
+  || bad "flutter-version differs between workflows: $(echo $pins)"
 
 echo "Scaffolder dry run"
 tmp=$(mktemp -d)

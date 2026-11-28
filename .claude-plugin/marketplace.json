@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Day-0 project setup skill: agent rules, docs set, verify script, security baseline, CI gate and a Flutter starter kit.",
-    "version": "1.2.0"
+    "version": "1.3.0"
   },
   "plugins": [
     {

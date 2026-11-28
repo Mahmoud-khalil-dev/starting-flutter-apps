@@ -6,6 +6,9 @@
 /// request. Never add an exemption for a single file.
 library;
 
+import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+
 import 'legacy_paths.dart';
 
 /// The Dart package name, as it appears in `package:` imports.
@@ -26,10 +29,6 @@ class Violation {
 /// The folders of the old layered layout. New code never imports them, so a
 /// project that adopts old code can keep it in these folders safely.
 const _oldLayoutFolders = ['business_logic', 'data', 'presentation'];
-
-/// `import 'x';` and `export 'x';` with the path captured. Matches the whole
-/// text, so a directive that dart format wraps is still caught.
-final _directive = RegExp(r"""\b(?:import|export)\s+['"]([^'"]+)['"]""");
 
 /// A URL written into code, anywhere in a string. Hosts come from Env.
 final _url = RegExp('https?://');
@@ -132,6 +131,52 @@ String? _libPath(String from, String target) {
   }
   if (target.contains(':')) return null;
   return Uri.parse(from).resolve(target).path;
+}
+
+/// A URI a directive points at. `line` is 1-based; `export` is true for
+/// an export directive.
+typedef DirectiveUri = ({String uri, int line, bool export});
+
+/// Every URI the file's directives name: imports, exports, parts, and each
+/// alternative of a conditional import. Read from the parsed file, so a
+/// directive split over lines, or text in a comment or string, is handled
+/// the way the compiler handles it.
+List<DirectiveUri> directiveUris(String content) {
+  final parsed = parseString(content: content, throwIfDiagnostics: false);
+  final found = <DirectiveUri>[];
+  void add(StringLiteral literal, {required bool export}) {
+    final uri = literal.stringValue;
+    if (uri == null) return;
+    final line = parsed.lineInfo.getLocation(literal.offset).lineNumber;
+    found.add((uri: uri, line: line, export: export));
+  }
+
+  for (final directive in parsed.unit.directives) {
+    final export = directive is ExportDirective;
+    if (directive is UriBasedDirective) add(directive.uri, export: export);
+    if (directive is NamespaceDirective) {
+      for (final c in directive.configurations) {
+        add(c.uri, export: export);
+      }
+    }
+  }
+  return found;
+}
+
+/// Whether a feature file re-exports anything in `data/` other than models,
+/// from outside `data/` or from `data/models/`. A barrel would let a screen
+/// reach the data layer through an import that names no data path, directly
+/// or through a models file that re-exports a source.
+bool barrelExportsData(String from, String target) {
+  if (!from.startsWith(featuresDir)) return false;
+  final own = from.substring(featuresDir.length).split('/');
+  final inData = own.length > 1 && own[1] == 'data';
+  final inModels = own.length > 3 && inData && own[2] == 'models';
+  if (inData && !inModels) return false;
+  final lib = _libPath(from, target);
+  if (lib == null || !lib.startsWith(featuresDir)) return false;
+  final parts = lib.substring(featuresDir.length).split('/');
+  return parts.length > 2 && parts[1] == 'data' && parts[2] != 'models';
 }
 
 /// Whether the import of [target] from [from] reaches old-layout code.
@@ -246,27 +291,31 @@ List<Violation> checkDartFile(String path, String content) {
   }
 
   if (legacy) return found;
-  scan(
-    _directive,
-    'legacy-import',
-    when: (m) => isLegacyImport(path, m.group(1)!),
-  );
+  final directives = directiveUris(content);
+  void scanDirectives(String rule, bool Function(DirectiveUri d) when) {
+    for (final d in directives) {
+      if (when(d) && seen.add('$rule:${d.line - 1}')) flag(d.line - 1, rule);
+    }
+  }
+
+  scanDirectives('legacy-import', (d) => isLegacyImport(path, d.uri));
   if (inFeatures) {
-    scan(
-      _directive,
+    scanDirectives(
       'cross-feature-import',
-      when: (m) => importsAnotherFeature(path, m.group(1)!),
+      (d) => importsAnotherFeature(path, d.uri),
     );
-    scan(
-      _directive,
+    scanDirectives(
       'presentation-imports-data',
-      when: (m) => presentationImportsData(path, m.group(1)!),
+      (d) => presentationImportsData(path, d.uri),
+    );
+    scanDirectives(
+      'feature-barrel-exports-data',
+      (d) => d.export && barrelExportsData(path, d.uri),
     );
   }
-  scan(
-    _directive,
+  scanDirectives(
     'core-imports-feature',
-    when: (m) => coreImportsFeature(path, m.group(1)!),
+    (d) => coreImportsFeature(path, d.uri),
   );
   // Whole-text rules: the line reported is where the match starts.
   if (inLib && !path.startsWith(l10nDir)) scan(_intlFormat, 'intl-format');

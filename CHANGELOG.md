@@ -5,6 +5,23 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-28
+
+Upgrading an app made with 1.2.0 or earlier: see "Behavior changes" in the 1.3.0 release notes on GitHub. An existing app keeps its copy of the kit until you copy the changed files in.
+
+### Added
+
+- Architecture rule `feature-barrel-exports-data`: a feature file may not re-export anything under `data/` other than `data/models/`, from outside `data/` or from a models file, so a screen cannot reach the data layer through a barrel.
+- CI job `goldens`: the golden tests run on macOS, where the reference images are made, and keep the diff images when they fail. A golden passes when at most 0.1% of its pixels differ, so antialiasing differences between Macs do not fail it.
+- Weekly CI run that scaffolds an app on the latest stable Flutter, as an early warning before the pin moves.
+- The scaffolder warns when the local Flutter differs from the pinned version, beta and dev versions included. Any non-empty `NEW_FLUTTER_APP_SKIP_VERSION_CHECK` turns the warning off.
+- `scripts/validate.sh` fails when the repository's and the kit's workflows pin different Flutter versions.
+- README sections "Opinions and limits" and "Support".
+
+### Changed
+
+- The architecture rules read directives with the Dart analyzer instead of a regular expression, so each `import`, `export` and `part` directive is read the way Dart reads it, including the URIs of conditional imports and exports. `analyzer` is now a direct dev dependency at the version the lock file already held.
+
 ## [1.2.0] - 2026-11-28
 
 Upgrading an app made with 1.1.0 or earlier: see the 1.2.0 release notes on GitHub. The kit is copied into each app, so an existing app keeps the old code until you copy the changed files in.
@@ -43,7 +60,8 @@ Upgrading an app made with 1.1.0 or earlier: see the 1.2.0 release notes on GitH
 - Claude Code plugin and marketplace manifests.
 - `scripts/validate.sh` and a CI workflow that runs it.
 
-[Unreleased]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Mahmoud-khalil-dev/starting-flutter-apps/releases/tag/v1.0.0

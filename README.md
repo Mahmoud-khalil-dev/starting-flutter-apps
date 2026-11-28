@@ -25,6 +25,8 @@ Works with Claude Code and any agent that reads `SKILL.md` skills (Codex, Gemini
 - [FAQ](#faq)
 - [Contributing](#contributing)
 - [Security](#security)
+- [Opinions and limits](#opinions-and-limits)
+- [Support](#support)
 - [License](#license)
 
 ## Who it is for
@@ -127,6 +129,7 @@ skills/starting-new-projects/scripts/new-flutter-app ~/code/atlas atlas "Atlas" 
 | `--name-ar "<name>"` | Arabic app name (default: the Latin name) |
 | `--dry-run` | Print the plan and stop |
 | `NEW_FLUTTER_APP_ROOT` | Parent folder for a defaulted target (default: current folder) |
+| `NEW_FLUTTER_APP_SKIP_VERSION_CHECK` | Any non-empty value (even `0`) turns off the warning when your Flutter differs from the pinned one |
 
 The script refuses a target that is not empty and writes only inside it. It runs `flutter create` for iOS, Android and web, copies the kit, renames the package everywhere, and creates git-ignored `env/dev.json` and `env/prod.json` from the examples.
 
@@ -183,6 +186,32 @@ bash scripts/validate.sh
 ## Security
 
 Please report vulnerabilities privately, as described in [SECURITY.md](SECURITY.md). Do not open a public issue.
+
+## Opinions and limits
+
+**The stack is fixed on purpose.** The kit uses feature-first folders, Cubits (bloc), get_it, go_router, dio and dartz `Either`. The architecture rules assume this layout. If your team uses another state library or another layout, use the skill's process and docs, and skip the kit.
+
+**Security is a baseline, not a certification.** You get:
+- tokens in the keychain or keystore on phones, and in memory on the web
+- the bearer token sent only to the API origin
+- `https` required in release builds
+- only named user fields saved to the device
+- a pattern-based secret check
+
+You don't get certificate pinning, root or jailbreak detection, obfuscation, or a history secret scanner. Add those your app needs, and test them.
+
+**What the gates prove:**
+- The architecture rules read every `import`, `export` and `part` directive in new code, and fail the build on a boundary crossing.
+- Coverage is an 80% line floor for each Cubit in new code.
+- Traceability proves every task of a built milestone has a test with its id in the name, unless its plan marks the task manual. It doesn't prove the test checks the right thing. Code review does that.
+
+**Big by default.** The kit includes auth, session, media, permissions, notifications and about 35 UI components. A small app may not need most of them. Delete what you don't use in the first week, while it's cheap.
+
+## Support
+
+- **Flutter:** each release is proven on the Flutter version pinned in `.github/workflows/validate.yml`. A weekly CI run tries the latest stable. A red run there is a warning to fix before a release. GitHub pauses scheduled runs after 60 days without repository activity.
+- **Versions:** releases follow semantic versioning. A change that can fail an existing app's gate, or changes runtime behavior, is listed under "Behavior changes" in the release notes, with upgrade steps.
+- **Reporting:** open an issue with the template. Report security problems privately, as `SECURITY.md` describes.
 
 ## License
 

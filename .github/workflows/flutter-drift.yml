@@ -1,0 +1,35 @@
+name: Flutter drift
+
+# Weekly: does the kit still scaffold, pass its gate and build on the newest
+# stable Flutter? A red run here is a warning to update the kit before users
+# hit it, never a block on pull requests.
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  latest-stable:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      NEW_FLUTTER_APP_SKIP_VERSION_CHECK: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          cache: true
+      - name: Scaffold a new app
+        run: |
+          skills/starting-new-projects/scripts/new-flutter-app \
+            "$RUNNER_TEMP/drift_app" drift_app "Drift App" --org com.example
+      - name: Run the new app's gate
+        working-directory: ${{ runner.temp }}/drift_app
+        run: bash tool/verify.sh
+      - name: Build for the web
+        working-directory: ${{ runner.temp }}/drift_app
+        run: flutter build web --dart-define-from-file=env/dev.json

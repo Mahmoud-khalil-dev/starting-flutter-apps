@@ -106,7 +106,7 @@ For each module: what it gives, then the file to change first.
 - a secret file tracked or about to be (`env/*.json` other than examples, keys, certificates);
 - unformatted new code, a stale generated l10n file, or an analyzer finding (`very_good_analysis`, empty baseline);
 - a failing test, a Cubit below the coverage gate, or a planned task with no test named for its id (traceability);
-- an architecture rule, named in `tool/architecture_rules.dart`: a feature importing another feature or legacy code, a raw host in `lib/`, a platform check outside `PlatformCapabilities`, an `// ignore:` comment, a skipped test, a runtime font fetch, a date format outside l10n or an API date without `'en'`, a raw colour, inline `TextStyle`, raw dimension or raw motion duration in UI code, a left or right edge instead of a directional one, text built by interpolation in a feature, a file over 400 lines.
+- an architecture rule, named in `tool/architecture_rules.dart`: a feature importing another feature or legacy code, core importing a feature, a screen importing a data source, a repository implementation or an HTTP, storage or SDK package, a feature file outside `data/` that re-exports anything in `data/` other than models, a raw host in `lib/`, a platform check outside `PlatformCapabilities`, an `// ignore:` comment, a skipped test, a runtime font fetch, a date format outside l10n or an API date without `'en'`, a raw colour, inline `TextStyle`, raw dimension or raw motion duration in UI code, a left or right edge instead of a directional one, text built by interpolation in a feature, a file over 400 lines.
 
 To change a rule, edit `tool/architecture_rules.dart` and the architecture doc in one change, with the reason. Never exempt one file.
 
