@@ -163,13 +163,16 @@ List<DirectiveUri> directiveUris(String content) {
   return found;
 }
 
-/// Whether a feature file outside `data/` re-exports a data source or a
-/// repository implementation. A barrel would let a screen reach the data
-/// layer through an import that names no data path.
+/// Whether a feature file re-exports anything in `data/` other than models,
+/// from outside `data/` or from `data/models/`. A barrel would let a screen
+/// reach the data layer through an import that names no data path, directly
+/// or through a models file that re-exports a source.
 bool barrelExportsData(String from, String target) {
   if (!from.startsWith(featuresDir)) return false;
   final own = from.substring(featuresDir.length).split('/');
-  if (own.length > 1 && own[1] == 'data') return false;
+  final inData = own.length > 1 && own[1] == 'data';
+  final inModels = own.length > 3 && inData && own[2] == 'models';
+  if (inData && !inModels) return false;
   final lib = _libPath(from, target);
   if (lib == null || !lib.startsWith(featuresDir)) return false;
   final parts = lib.substring(featuresDir.length).split('/');

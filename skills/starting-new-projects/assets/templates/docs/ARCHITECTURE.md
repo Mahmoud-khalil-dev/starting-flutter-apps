@@ -43,6 +43,7 @@ An agent never invents a state or a transition; a new one is added here first, w
 | feature-import | A feature never imports another feature | it could not be deleted, cycles follow |
 | core-imports-feature | Core never imports a feature | core is the base |
 | presentation-imports-data | Presentation never touches HTTP, storage or an SDK | tests use doubles |
+| feature-barrel-exports-data | A feature file never re-exports `data/` other than models | a barrel would hide a screen's data import |
 | state-calls-state | State holders never call each other | hidden ordering bugs |
 | raw-host | No literal host or dashboard URL in source | wrong server on release |
 | stub-import | The dev stub is never imported outside the dev entry point | it must not ship |

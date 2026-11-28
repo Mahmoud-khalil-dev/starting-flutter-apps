@@ -129,7 +129,7 @@ skills/starting-new-projects/scripts/new-flutter-app ~/code/atlas atlas "Atlas" 
 | `--name-ar "<name>"` | Arabic app name (default: the Latin name) |
 | `--dry-run` | Print the plan and stop |
 | `NEW_FLUTTER_APP_ROOT` | Parent folder for a defaulted target (default: current folder) |
-| `NEW_FLUTTER_APP_SKIP_VERSION_CHECK` | Any value turns off the warning when your Flutter differs from the pinned one |
+| `NEW_FLUTTER_APP_SKIP_VERSION_CHECK` | Any non-empty value (even `0`) turns off the warning when your Flutter differs from the pinned one |
 
 The script refuses a target that is not empty and writes only inside it. It runs `flutter create` for iOS, Android and web, copies the kit, renames the package everywhere, and creates git-ignored `env/dev.json` and `env/prod.json` from the examples.
 
@@ -209,7 +209,7 @@ You don't get certificate pinning, root or jailbreak detection, obfuscation, or 
 
 ## Support
 
-- **Flutter:** each release is proven on the Flutter version pinned in `.github/workflows/validate.yml`. A weekly CI run tries the latest stable. A red run there is a warning to fix before a release.
+- **Flutter:** each release is proven on the Flutter version pinned in `.github/workflows/validate.yml`. A weekly CI run tries the latest stable. A red run there is a warning to fix before a release. GitHub pauses scheduled runs after 60 days without repository activity.
 - **Versions:** releases follow semantic versioning. A change that can fail an existing app's gate, or changes runtime behavior, is listed under "Behavior changes" in the release notes, with upgrade steps.
 - **Reporting:** open an issue with the template. Report security problems privately, as `SECURITY.md` describes.
 

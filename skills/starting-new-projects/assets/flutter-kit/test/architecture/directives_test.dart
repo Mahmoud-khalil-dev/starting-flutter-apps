@@ -76,5 +76,23 @@ void main() {
         isNot(contains('feature-barrel-exports-data')),
       );
     });
+
+    test('a models file re-exporting a source is flagged, so no barrel '
+        'reaches data/ in two steps', () {
+      expect(
+        _rules(
+          'lib/features/auth/data/models/models.dart',
+          "$_exportKeyword '../sources/a.dart';",
+        ),
+        contains('feature-barrel-exports-data'),
+      );
+      expect(
+        _rules(
+          'lib/features/auth/data/models/models.dart',
+          "$_exportKeyword 'user.dart';",
+        ),
+        isNot(contains('feature-barrel-exports-data')),
+      );
+    });
   });
 }
