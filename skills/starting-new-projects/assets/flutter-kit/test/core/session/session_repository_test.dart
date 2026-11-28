@@ -36,6 +36,18 @@ Future<SessionRepository> _repository({String? token, String? user}) async {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  test('KIT-T10: only the named user fields are saved to the device', () async {
+    final repository = await _repository();
+    await repository.start(
+      token: 'test-token',
+      user: {'id': 1, 'role': 'MEMBER', 'name': 'A', 'national_id': '123'},
+    );
+    final prefs = await SharedPreferences.getInstance();
+    final saved = SessionRepository.cachedUser(prefs.getString('user'))!;
+    expect(saved, {'id': 1, 'role': 'MEMBER', 'name': 'A'});
+    expect(repository.user!.raw['national_id'], '123');
+  });
+
   group('KIT-T10: the cached user', () {
     for (final (name, json, role) in [
       ('a member', _member, AppRole.member),

@@ -44,10 +44,27 @@ int legacyIssueCount(String machineOutput, String root) =>
     _classify(machineOutput, root).legacy;
 
 /// [machineOutput] is `dart analyze --format=machine`. [root] is the absolute
-/// repo path with a trailing slash, stripped from each file.
-GateResult checkAnalyze(String machineOutput, int baseline, String root) {
+/// repo path with a trailing slash, stripped from each file. [exit] is the
+/// analyzer's exit code: non-zero with no issue parsed means the analyzer
+/// itself failed (bad config, unresolved packages), which must not pass.
+GateResult checkAnalyze(
+  String machineOutput,
+  int baseline,
+  String root, {
+  int exit = 0,
+}) {
   final (:strict, :legacy) = _classify(machineOutput, root);
   if (strict.isNotEmpty) return GateResult(passed: false, messages: strict);
+  if (exit != 0 && legacy == 0) {
+    return GateResult(
+      passed: false,
+      messages: [
+        'dart analyze failed with exit code $exit and reported no issue. '
+                '${machineOutput.trim()}'
+            .trim(),
+      ],
+    );
+  }
   if (legacy > baseline) {
     return GateResult(
       passed: false,
@@ -75,7 +92,7 @@ void main(List<String> args) {
     return;
   }
   final baseline = int.parse(File(_baselineFile).readAsStringSync().trim());
-  final result = checkAnalyze(output, baseline, root);
+  final result = checkAnalyze(output, baseline, root, exit: run.exitCode);
   result.messages.forEach(result.passed ? stdout.writeln : stderr.writeln);
   if (!result.passed) exitCode = 1;
 }

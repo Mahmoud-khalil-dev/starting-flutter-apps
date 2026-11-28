@@ -52,7 +52,7 @@ For each module: what it gives, then the file to change first.
   - Gives: session Cubit, repository, sign-out with a session generation, stale-session guard, startup decision, `SessionBound`.
   - Change first: `core/session/app_role.dart`, `session_remote_source.dart`.
 - **storage**
-  - Gives: secure storage with one writer, preferences, key registry, schema-version stamp with a migrate hook.
+  - Gives: secure storage with one writer (keychain or keystore on phones, memory only on the web, so a token never lands in localStorage), preferences that keep only the named user fields, key registry, schema-version stamp with a migrate hook.
   - Change first: `core/storage/storage_keys.dart`.
 - **error**
   - Gives: `Failure` types, error handler, failure messages, `guardStep`.
@@ -93,7 +93,7 @@ For each module: what it gives, then the file to change first.
   - Gives: theme, language and text size across every layer, and a quiet sign-out under the settings groups.
   - Change first: copy it for the first feature.
 - **tool and test**
-  - Gives: `verify.sh`, analyze gate, coverage gate, secret scan, strict format, gen-l10n drift check, architecture rules and tests, goldens.
+  - Gives: `verify.sh`, analyze gate, coverage gate, secret scan (file names and key-shaped content), strict format, gen-l10n drift check, architecture rules and tests, goldens.
   - Change first: `tool/architecture_rules.dart` when a rule changes.
 - **.github/workflows/verify.yml**
   - Gives: `tool/verify.sh` on every pull request on Flutter 3.44.9, with Flutter and pub caches (the pub key hashes `pubspec.yaml` and `pubspec.lock` together; the kit ships its lock, so keep it committed); packages resolve with `flutter pub get --enforce-lockfile`, so a lock out of step with `pubspec.yaml` fails the run; goldens skip on CI; actions pinned to commit SHAs, read-only token. The pinned actions run on Node 24 and need Actions Runner 2.327.1 or newer: fine on GitHub-hosted runners, update a self-hosted one first.

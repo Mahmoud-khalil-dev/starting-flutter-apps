@@ -204,11 +204,11 @@ class SessionRepository {
     return next;
   }
 
-  /// The user object is stored as received; the token stays only in secure
-  /// storage.
+  /// Only the named user fields are saved (SessionUser.storedFields); the
+  /// whole object stays in memory. The token stays only in secure storage.
   Future<void> _writeUser(Map<String, dynamic> user, int generation) async {
     if (generation != _generation) return;
-    await _preferences.setUserJson(jsonEncode(user));
+    await _preferences.setUserJson(jsonEncode(SessionUser.stored(user)));
     if (generation != _generation) return;
     _user = SessionUser.fromJson(user);
   }

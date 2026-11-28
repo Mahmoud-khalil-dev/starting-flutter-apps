@@ -137,6 +137,93 @@ void main() {
     });
   });
 
+  group('KIT-T7: core never imports a feature', () {
+    test('a feature import from core is flagged, by package or relative', () {
+      expect(
+        _rules('lib/core/session/a.dart', _import('features/auth/b.dart')),
+        contains('core-imports-feature'),
+      );
+      expect(
+        _rules(
+          'lib/core/session/a.dart',
+          "$_importKeyword '../../features/auth/b.dart';",
+        ),
+        contains('core-imports-feature'),
+      );
+    });
+
+    test('core importing core, and app importing a feature, are fine', () {
+      expect(
+        _rules('lib/core/session/a.dart', _import('core/network/b.dart')),
+        isNot(contains('core-imports-feature')),
+      );
+      expect(
+        _rules('lib/app/router/a.dart', _import('features/auth/b.dart')),
+        isNot(contains('core-imports-feature')),
+      );
+    });
+  });
+
+  group('KIT-T7: presentation never touches data sources or SDKs', () {
+    const screen = 'lib/features/auth/presentation/view/a.dart';
+
+    test('a data source or repository implementation is flagged', () {
+      for (final target in [
+        'features/auth/data/sources/auth_remote_source.dart',
+        'features/auth/data/repositories/auth_repository_impl.dart',
+      ]) {
+        expect(
+          _rules(screen, _import(target)),
+          contains('presentation-imports-data'),
+          reason: target,
+        );
+      }
+      expect(
+        _rules(screen, "$_importKeyword '../../data/sources/a.dart';"),
+        contains('presentation-imports-data'),
+      );
+    });
+
+    test('HTTP, storage and SDK packages are flagged', () {
+      for (final pkg in [
+        'dio/dio.dart',
+        'http/http.dart',
+        'shared_preferences/shared_preferences.dart',
+        'flutter_secure_storage/flutter_secure_storage.dart',
+      ]) {
+        expect(
+          _rules(screen, "$_importKeyword 'package:$pkg';"),
+          contains('presentation-imports-data'),
+          reason: pkg,
+        );
+      }
+    });
+
+    test('models, the domain contract and core are fine', () {
+      for (final target in [
+        'features/auth/data/models/user.dart',
+        'features/auth/domain/repositories/auth_repository.dart',
+        'core/widgets/app_button.dart',
+      ]) {
+        expect(
+          _rules(screen, _import(target)),
+          isNot(contains('presentation-imports-data')),
+          reason: target,
+        );
+      }
+    });
+
+    test('a data layer may use its own sources', () {
+      expect(
+        _rules(
+          'lib/features/auth/data/repositories/a.dart',
+          _import('features/auth/data/sources/b.dart'),
+        ),
+        isNot(contains('presentation-imports-data')),
+      );
+    });
+  });
+
   group('KIT-T7: tests and tools are strict too', () {
     test('an ignore comment in test/ or tool/ is flagged', () {
       for (final path in ['test/a_test.dart', 'tool/a.dart']) {

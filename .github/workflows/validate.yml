@@ -23,3 +23,32 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
       - name: Validate the skill package
         run: bash scripts/validate.sh
+
+  # The package checks above never run Flutter. This job proves the skill's
+  # output: it scaffolds a real app, runs that app's own gate, and builds it.
+  scaffold-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # The same pinned Flutter the kit's own CI uses.
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.44.9
+          cache: true
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('skills/starting-new-projects/assets/flutter-kit/pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+      - name: Scaffold a new app
+        run: |
+          skills/starting-new-projects/scripts/new-flutter-app \
+            "$RUNNER_TEMP/e2e_app" e2e_app "E2E App" --org com.example
+      - name: Run the new app's gate
+        working-directory: ${{ runner.temp }}/e2e_app
+        run: bash tool/verify.sh
+      - name: Build the new app for the web
+        working-directory: ${{ runner.temp }}/e2e_app
+        run: flutter build web --dart-define-from-file=env/dev.json

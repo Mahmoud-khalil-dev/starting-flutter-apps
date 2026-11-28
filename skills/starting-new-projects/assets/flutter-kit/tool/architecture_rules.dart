@@ -151,6 +151,45 @@ bool importsAnotherFeature(String from, String target) {
   return featureOf(lib) != featureOf(from);
 }
 
+const coreDir = 'lib/core/';
+
+/// Whether a core file imports a feature. Core is the base: one upward
+/// import and nothing can move or be deleted on its own.
+bool coreImportsFeature(String from, String target) {
+  if (!from.startsWith(coreDir)) return false;
+  final lib = _libPath(from, target);
+  return lib != null && lib.startsWith(featuresDir);
+}
+
+/// Packages that are HTTP, storage or platform SDKs. A screen reads a state
+/// holder instead, so tests use a double and a source can change alone.
+const _dataPackages = [
+  'dio',
+  'http',
+  'shared_preferences',
+  'flutter_secure_storage',
+  'sqflite',
+  'hive',
+  'firebase_core',
+  'cloud_firestore',
+  'firebase_auth',
+];
+
+/// Whether a presentation file reaches a data source, a repository
+/// implementation, or an HTTP, storage or SDK package. Data models are fine:
+/// they are plain values the state carries.
+bool presentationImportsData(String from, String target) {
+  if (!_presentation.hasMatch(from)) return false;
+  if (target.startsWith('package:')) {
+    final package = target.substring('package:'.length).split('/').first;
+    if (_dataPackages.contains(package)) return true;
+  }
+  final lib = _libPath(from, target);
+  if (lib == null || !lib.startsWith(featuresDir)) return false;
+  final parts = lib.substring(featuresDir.length).split('/');
+  return parts.length > 2 && parts[1] == 'data' && parts[2] != 'models';
+}
+
 /// The text of the call that opens at [open], up to its closing paren.
 String _call(String text, int open) {
   var depth = 0;
@@ -218,7 +257,17 @@ List<Violation> checkDartFile(String path, String content) {
       'cross-feature-import',
       when: (m) => importsAnotherFeature(path, m.group(1)!),
     );
+    scan(
+      _directive,
+      'presentation-imports-data',
+      when: (m) => presentationImportsData(path, m.group(1)!),
+    );
   }
+  scan(
+    _directive,
+    'core-imports-feature',
+    when: (m) => coreImportsFeature(path, m.group(1)!),
+  );
   // Whole-text rules: the line reported is where the match starts.
   if (inLib && !path.startsWith(l10nDir)) scan(_intlFormat, 'intl-format');
   if (path == apiFormatsPath) {

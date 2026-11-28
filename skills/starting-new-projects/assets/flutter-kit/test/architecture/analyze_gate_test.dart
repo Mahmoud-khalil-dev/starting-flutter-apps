@@ -34,5 +34,22 @@ void main() {
       expect(r.passed, isTrue);
       expect(r.messages.single, contains('0 legacy issues, baseline 0'));
     });
+
+    test('an analyzer that fails without reporting an issue fails', () {
+      final r = checkAnalyze(
+        'Could not resolve package',
+        0,
+        '/repo/',
+        exit: 64,
+      );
+      expect(r.passed, isFalse);
+      expect(r.messages.single, contains('exit code 64'));
+    });
+
+    test('a non-zero exit with issues is judged by the issues', () {
+      final r = checkAnalyze(_issue('lib/a.dart'), 0, '/repo/', exit: 1);
+      expect(r.passed, isFalse);
+      expect(r.messages.single, startsWith('lib/a.dart:1'));
+    });
   });
 }
