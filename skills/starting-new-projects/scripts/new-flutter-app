@@ -124,8 +124,8 @@ command -v flutter >/dev/null 2>&1 || die 'flutter is not on PATH'
 command -v rsync >/dev/null 2>&1 || die 'rsync is not on PATH'
 # The kit is proven on one Flutter version; another may change the platform
 # templates the scaffold patches, or the packages the lock pins.
-pinned=$(sed -n 's/^ *flutter-version: *//p' "$kit/.github/workflows/verify.yml" | head -n 1)
-current=$(flutter --version 2>/dev/null | sed -n 's/^Flutter \([0-9.]*\).*/\1/p' | head -n 1)
+pinned=$(sed -n 's/^ *flutter-version: *//p' "$kit/.github/workflows/verify.yml" 2>/dev/null | head -n 1 || true)
+current=$(flutter --version 2>/dev/null | sed -n 's/^Flutter \([0-9.]*\).*/\1/p' | head -n 1 || true)
 if [ -n "$pinned" ] && [ "$current" != "$pinned" ] && [ -z "${NEW_FLUTTER_APP_SKIP_VERSION_CHECK:-}" ]; then
   echo "new-flutter-app: warning: the kit is proven on Flutter $pinned, this is ${current:-unknown}." >&2
   echo "  It may still work; if a step fails, switch to $pinned (fvm or flutter downgrade)." >&2
